@@ -6,13 +6,13 @@ class HammingPacket // class
 {
 public:
     HammingPacket(); // create object with value = 0
-    HammingPacket(HammingPacket tmp);
+    HammingPacket(const HammingPacket& tmp);
     HammingPacket(char* s); // create object from value = char[16] and cleaars it
 
     int clean_in_int(); // return clean recovery packet in int
     std::string clean_in_string(); // return clean recovery packet in string
 
-    HammingPacket& operator =(HammingPacket& tmp);
+    HammingPacket& operator=(HammingPacket& tmp);
 
     friend std::istream& operator >>(std::istream& in, HammingPacket& tmp); // enters value
     friend std::ostream& operator <<(std::ostream& out, HammingPacket& tmp); // outputs a primordial package
@@ -23,6 +23,7 @@ private:
     {
     public:
         Binary(); // create object with value = 0
+        Binary(const Binary& tmp);
         Binary(int value); // create object from value = int
         Binary(char* s); // create object from value = char[16]
 
@@ -34,7 +35,7 @@ private:
         Binary& operator -(Binary& tmp); // subtraction of two of the packages as mathematical objects (not used)
         Binary& operator *(Binary& tmp); // multiplication of two of the packages as mathematical objects (not used)
         Binary& operator /(Binary& tmp); // division of two of the packages as mathematical objects (not used)
-        Binary& operator =(Binary& tmp); // assignment overload
+        Binary& operator =(const Binary& tmp); // assignment overload
 
     private:
         bool data[15] = {}; // the package is stored

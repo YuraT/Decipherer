@@ -12,7 +12,7 @@ public:
 	Hamming();
 	Hamming(HammingPacket tmp);
 
-	HammingPacket get_packet(int index);
+	HammingPacket& get_packet(int index);
 	std::string get_clear_text();
 	int size();
 

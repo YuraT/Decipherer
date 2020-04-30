@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <algorithm>
 #include <functional>
 #include <cctype>
@@ -16,6 +16,6 @@ int main()
 	cin >> h;
 	cout << h << endl;
 	HammingPacket f;
-	f = h.get_packet(1);
+	f = (h.get_packet(1));
 	cout << f;
 }

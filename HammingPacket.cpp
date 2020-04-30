@@ -16,7 +16,12 @@ HammingPacket::HammingPacket() // create object with value = 0
 	this->finalCleanInt = 0;
 	this->finalCleanString = "00000000000";
 }
-
+HammingPacket::HammingPacket(const HammingPacket& tmp) {
+	this->fullSection = tmp.fullSection;
+	this->firstClean = tmp.firstClean;
+	this->finalCleanInt = tmp.finalCleanInt;
+	this->finalCleanString = tmp.finalCleanString;
+}
 HammingPacket::HammingPacket(char* s) // create object from value = char[16] and cleaars it
 {
 	Binary t(s);
@@ -234,6 +239,12 @@ HammingPacket::Binary::Binary() // create object with value = 0
 		this->data[i] = false;
 	}
 }
+HammingPacket::Binary::Binary(const Binary& tmp) {
+	for (int i = 0; i < 15; ++i)
+	{
+		this->at(i) = tmp.data[i];
+	}
+}
 
 HammingPacket::Binary::Binary(int value) // create object from value = int
 {
@@ -336,11 +347,11 @@ HammingPacket::Binary& HammingPacket::Binary::operator/(Binary& tmp) // division
 	return tmp;
 }
 
-HammingPacket::Binary& HammingPacket::Binary::operator=(Binary& tmp) // assignment overload
+HammingPacket::Binary& HammingPacket::Binary::operator=(const Binary& tmp) // assignment overload
 {
 	for (int i = 0; i < 15; ++i)
 	{
-		this->at(i) = tmp.at(i);
+		this->at(i) = tmp.data[i];
 	}
 	return *(this);
 }

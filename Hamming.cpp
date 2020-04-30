@@ -18,7 +18,7 @@ Hamming::Hamming(HammingPacket tmp)
 	this->text.push_back(tmp);
 }
 
-HammingPacket Hamming::get_packet(int index)
+HammingPacket& Hamming::get_packet(int index)
 {
 	HammingPacket h;
 	h = text[index];

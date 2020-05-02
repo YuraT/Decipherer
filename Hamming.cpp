@@ -1,52 +1,49 @@
 #include <iostream>
-#include <algorithm>
-#include <functional>
-#include <vector>
-#include <string>
+#include <cstring>
 
 #include "Hamming.h"
 #include "HammingPacket.h"
 
-
-Hamming::Hamming()
+HammingPacket& Hamming::get_packet(int index) // Возвращает копию HammingPacket из вектора по индексу
 {
-	clearText = "";
-}
-
-Hamming::Hamming(HammingPacket tmp)
-{
-	this->text.push_back(tmp);
-}
-
-HammingPacket Hamming::get_packet(int index)
-{
-	HammingPacket h;
-	h = text[index];
-	return h;
+	return text.at(index); // тоже самое что return HammingPacket(text.at(index))
 }
 
 std::string Hamming::get_clear_text()
 {
-	std::vector <HammingPacket>::iterator it;
 	std::string str;
-	for (it = text.begin(); it < text.end(); ++it)
-	{
-		str += (*it).clean_in_string();
+	for (auto& h : text) {
+		str += h.clean_in_string();
 	}
 	return str;
 }
 
-int Hamming::size()
-{
-	return this->text.size();
+bool check_user_input(std::string& str) {
+	std::size_t pos = str.find_first_of(' ');
+	while (pos != std::string::npos) {
+		str.erase(pos, 1);
+		pos = str.find_first_of(' ', pos);
+	}
+
+	for (auto& c : str) {
+		if (c != '0' && c != '1') {
+			return false;
+		}
+	}
+	return true;
 }
 
 std::istream& operator>>(std::istream& in, Hamming& tmp) // inputs text with the Hamming encoding
 {
+	// getting user input
 	std::string str;
-	getline(in, str);
-
-	str.erase(remove_if(str.begin(), str.end(), std::not1(std::ptr_fun(isdigit))), str.end()); // deletes all non-digit symbols
+	std::cout << "Put your input here (format: \"1100101 10101 101101\"): ";
+	do {
+		std::getline(in, str);
+		if (!check_user_input(str)) {
+			std::cerr << "Incorrect input found! Try again: ";
+		}
+	} while (!check_user_input(str));
 
 	int n;
 	n = str.size() / 15;
@@ -88,14 +85,12 @@ std::istream& operator>>(std::istream& in, Hamming& tmp) // inputs text with the
 	return in;
 }
 
-std::ostream& operator<<(std::ostream& out, Hamming& tmp) // formatted text output in Hamming encoding
+std::ostream& operator<<(std::ostream& out, const Hamming& tmp) // formatted text output in Hamming encoding
 {
-	std::cout << "Total of " << tmp.size() << " elements:" << std::endl;
-	std::vector <HammingPacket>::iterator it;
-	int i = 0;
-	for (it = tmp.text.begin(); it < tmp.text.end(); ++it, ++i)
-	{
-		std::cout << i + 1 << " - " << *it << std::endl;
+	std::cout << "Total of " << tmp.text.size() << " elements:" << std::endl;
+	int i = 1;
+	for (auto& h : tmp.text) {
+		std::cout << i++ << " - " << h << std::endl;
 	}
 	return out;
 }

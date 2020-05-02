@@ -4,7 +4,7 @@ Program that decrypts any length of Hamming code into Elias code. The received v
 # Download
 ```bash
 git clone https://github.com/MSHP-Community/Decipherer
-git clona https://github.com/NikKrasavchik/Decipherer
+git clone https://github.com/NikKrasavchik/Decipherer
 ```
 
 # Build

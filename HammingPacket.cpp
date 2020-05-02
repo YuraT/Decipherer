@@ -5,27 +5,23 @@
 #include <string>
 #include <vector>
 
-
-// The code for the Hamming class:
-
 HammingPacket::HammingPacket() // create object with value = 0
 {
-	Binary t1, t2;
-	this->fullSection = t1;
-	this->firstClean = t2;
 	this->finalCleanInt = 0;
 	this->finalCleanString = "00000000000";
 }
 
-HammingPacket::HammingPacket(char* s) // create object from value = char[16] and cleaars it
+HammingPacket::HammingPacket(const char* s) : HammingPacket() // create object from value = char[16] and cleaars it
 {
-	Binary t(s);
-	Binary t1;
-	this->fullSection = t;
-	this->firstClean = t1;
-	this->finalCleanInt = 0;
-	this->finalCleanString = "00000000000";
+	this->fullSection = Binary(s);
 	clean(); // clears the text
+}
+
+HammingPacket::HammingPacket(const HammingPacket& src) {
+	this->fullSection = src.fullSection;
+	this->firstClean = src.firstClean; // the original pocket after recovery
+	this->finalCleanInt = src.finalCleanInt; // a clean restored packet with no security bits in int
+	this->finalCleanString = src.finalCleanString;
 }
 
 void HammingPacket::clean() // the main method that calculates the error using the check() method is fixed and defines the package without protection
@@ -35,10 +31,8 @@ void HammingPacket::clean() // the main method that calculates the error using t
 	this->firstClean = this->fullSection;
 
 	Binary tmp = this->fullSection; /* */
-	if (tmp.at(change - 1)) // the restoration of the damaged package
-		this->firstClean.at(change - 1) = false;
-	else
-		this->firstClean.at(change - 1) = true;
+
+	this->firstClean.at(change - 1) = !tmp.at(change - 1); // the restoration of the damaged package
 
 	this->fullSection = tmp; /* */
 	delete_excess(firstClean); // deletes defender bits
@@ -54,13 +48,15 @@ std::string HammingPacket::clean_in_string() // return clean recovery packet in 
 	return finalCleanString;
 }
 
-HammingPacket& HammingPacket::operator=(HammingPacket& tmp)
-{
+HammingPacket& HammingPacket::operator=(const HammingPacket& tmp) {
+	if (&tmp == this) { // self-assignment check
+		return *this;
+	}
 	this->fullSection = tmp.fullSection;
 	this->firstClean = tmp.firstClean;
 	this->finalCleanInt = tmp.finalCleanInt;
 	this->finalCleanString = tmp.finalCleanString;
-	return *(this);
+	return *this;
 }
 
 int HammingPacket::check() // method that find error using first_check(), second_check(), third_check(), fourth_check(), return error number in Base-2
@@ -171,7 +167,6 @@ long long HammingPacket::to_bin(long long value) const  // convert from Base-10 
 	return value;
 }
 
-
 void HammingPacket::delete_excess(Binary section) // method that delete protecting bits
 {
 	std::vector <bool> b(15, false);
@@ -181,10 +176,7 @@ void HammingPacket::delete_excess(Binary section) // method that delete protecti
 
 	for (it = b.begin(); it < b.end(); ++it, ++i) // copy value from packet to vector
 	{
-		if (section.at(i))
-			*it = true;
-		else
-			*it = false;
+		*it = section.at(i);
 	}
 	b.erase(b.begin() + 7); // deletes defender bit on position 8
 	b.erase(b.begin() + 3); // deletes defender bit on position 4
@@ -213,7 +205,7 @@ std::istream& operator>>(std::istream& in, HammingPacket& tmp) // enters value
 	return in;
 }
 
-std::ostream& operator<<(std::ostream& out, HammingPacket& tmp) // outputs a primordial package
+std::ostream& operator<<(std::ostream& out, const HammingPacket& tmp) // outputs a primordial package
 {
 	tmp.fullSection.write();
 	return out;
@@ -229,57 +221,28 @@ std::ostream& operator<<(std::ostream& out, HammingPacket& tmp) // outputs a pri
 
 HammingPacket::Binary::Binary() // create object with value = 0
 {
-	for (int i = 0; i < 15; ++i)
+	for (bool& i : this->data)
 	{
-		this->data[i] = false;
+		i = false;
 	}
 }
 
-HammingPacket::Binary::Binary(int value) // create object from value = int
+HammingPacket::Binary::Binary(int value) : Binary() // create object from value = int
 {
-	int bin = this->to_bin(value);
-	int i = 0;
-
-	for (int i = 0; i < 15; ++i)
+	for (int i = 14; value && i >= 0; --i)
 	{
-		this->data[i] = false;
-	}
-
-	while (value) {
-		if (value % 2)
-			this->data[14 - i] = true;
-		value /= 2;
-		++i;
-	}
-}
-
-HammingPacket::Binary::Binary(char* s) // create object from value = char[16]
-{
-	for (int i = 0; i < 15; ++i)
-	{
-		this->data[i] = false;
-	}
-	int num = 0;
-	for (int i = 15 - strlen(s); i < 15; ++i)
-	{
-		if (s[num] == '1')
-			this->data[i] = true;
-		++num;
-	}
-}
-
-int HammingPacket::Binary::to_bin(int value) const // convert from Base-10 to Base-2
-{
-	int bin = 0, k = 1;
-
-	while (value)
-	{
-		bin += (value % 2) * k;
-		k *= 10;
+		this->data[i] = value % 2;
 		value /= 2;
 	}
+}
 
-	return value;
+HammingPacket::Binary::Binary(const char* s) : Binary() // create object from value = char[16]
+{
+	int pos = int(strlen(s) - 1);
+	for (int i = 14; pos >= 0 && i >= 0; --i, --pos)
+	{
+		this->data[i] = s[pos] - '0';
+	}
 }
 
 int HammingPacket::Binary::to_int() const // convert from Base-2 to Base-10
@@ -336,13 +299,16 @@ HammingPacket::Binary& HammingPacket::Binary::operator/(Binary& tmp) // division
 	return tmp;
 }
 
-HammingPacket::Binary& HammingPacket::Binary::operator=(Binary& tmp) // assignment overload
+HammingPacket::Binary& HammingPacket::Binary::operator=(const Binary& tmp) // assignment overload
 {
+	if (this == &tmp) { // self assignment check
+		return *this;
+	}
 	for (int i = 0; i < 15; ++i)
 	{
-		this->at(i) = tmp.at(i);
+		this->data[i] = tmp.data[i];
 	}
-	return *(this);
+	return *this;
 }
 
 bool& HammingPacket::Binary::at(int index) // provide access
@@ -362,12 +328,9 @@ void HammingPacket::Binary::read() // enters value
 
 void HammingPacket::Binary::write() const // outputs value with non-significant zeros
 {
-	for (int i = 0; i < 15; ++i)
+	for (bool i : this->data)
 	{
-		if (this->data[i])
-			std::cout << 1;
-		else
-			std::cout << 0;
+		std::cout << i;
 	}
 }
 

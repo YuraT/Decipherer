@@ -11,7 +11,7 @@ class Hamming
 public:
 	Hamming(std::string txt);
 
-	HammingPacket& get_packet(int index);
+	std::string get_packet(int index);
 	std::string get_clear_text();
 	void write_detail_information();
 

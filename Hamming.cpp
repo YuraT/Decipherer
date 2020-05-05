@@ -44,9 +44,11 @@ Hamming::Hamming(std::string txt)
 	this->text = t;
 }
 
-HammingPacket& Hamming::get_packet(int index) // ¬озвращает копию HammingPacket из вектора по индексу
+std::string Hamming::get_packet(int index) // ¬озвращает копию HammingPacket из вектора по индексу
 {
-	return text.at(index); // тоже самое что return HammingPacket(text.at(index))
+	HammingPacket h = text.at(index);
+	std::string str = h.clean_in_string();
+	return str; // тоже самое что return HammingPacket(text.at(index))
 }
 
 std::string Hamming::get_clear_text()
@@ -62,7 +64,7 @@ void Hamming::write_detail_information() // добавить разшивровку
 {
 	std::cout << "Total of " << this->text.size() << " elements:" << std::endl;
 	int i = 1;
-	for (int i = 0; i < this->text.size(); ++i) {
+	for (int i = 0; i < (int)this->text.size(); ++i) {
 		std::cout << i + 1 << " - " << this->text.at(i) << " : " << this->get_packet(i) << std::endl;
 	}
 	std::cout << std::endl;

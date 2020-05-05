@@ -13,7 +13,6 @@ public:
 	Elias(std::string txt);
 
 	void read();
-	void out();
 
 	std::string get_final_text();
 	std::vector <std::string> get_format_str_text();
@@ -38,5 +37,6 @@ private:
 	void finalSeparation();
 	void createIntValue();
 
+	void out();
 };
 

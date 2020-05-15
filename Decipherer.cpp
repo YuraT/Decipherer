@@ -1,10 +1,14 @@
-﻿#include <iostream>
+﻿#include <Windows.h>
+#undef max
+#include <iostream>
 #include <clocale>
 #include <algorithm>
 #include <limits>
+#include <string>
 
 #include "Hamming.h"
 #include "Elias.h"
+#include "Siberia.h"
 
 using namespace std;
 
@@ -18,6 +22,9 @@ using namespace std;
 //
 // ASCII test input : 1100001011100101111100001110110111101110
 // correct result : Верно
+//
+// Siberia test input : 
+// correct result : 
 
 
 void unencrypt_ascii_text(vector <int> txt)
@@ -64,17 +71,25 @@ vector <string> fromStrToVStr(string txt)
 void workWithHamming(string text)
 {
 	Hamming code(text);
-	string t = code.get_clear_text();
+	string anws = code.get_clear_text();
 	cout << "Answer: " << endl;
-	cout << t << endl;
+	cout << anws << endl;
 }
 
 void workWithElias(string text)
 {
 	Elias code(text);
-	string t = code.get_final_text();
+	string anws = code.get_final_text();
 	cout << "Answer: " << endl;
-	cout << t << endl;
+	cout << anws << endl;
+}
+
+void workWithSiberia(wstring text)
+{
+	Siberia code(text);
+	wstring anws = code.get_decrypted_text();
+	cout << "Answer: " << endl;
+	wcout << anws << endl;
 }
 
 bool pred(char x)
@@ -98,6 +113,7 @@ string user_text_input()
 	string text;
 	do {
 		cout << "Put the encrypted text (format: \"1100101 10101 101101\"):" << endl;
+		string text;
 		getline(cin, text);
 		if (!check_user_input(text))
 		{
@@ -110,10 +126,19 @@ string user_text_input()
 void user_input()
 {
 	string uin;
-	cout << "Put the encoding type (Exampls: \"Hamming\", \"Elias\", \"ASCII\"):" << endl;
+	cout << "Put the encoding type (Exampl: \"Hamming\"; \"alltyipes\" for output of all types):" << endl;
 	getline(cin, uin);
 
-
+	if (uin == "alltypes")
+	{
+		cout << "All Types:" << endl;
+		cout << "\"Hamming\"" << endl;
+		cout << "\"Elias\"" << endl;
+		cout << "\"ASCII\"" << endl;
+		cout << "\"Siberia\"" << endl;
+		cout << "Put the encoding type:" << endl;
+		getline(cin, uin);
+	}
 	if (uin == "Hamming")
 	{
 		string text = user_text_input();
@@ -128,6 +153,13 @@ void user_input()
 	{
 		string text = user_text_input();
 		unencrypt_ascii_text(fromVStrToVInt(fromStrToVStr(text)));
+	}
+	else if (uin == "Siberia")
+	{
+		cout << "Put the encrypted text (format: \"very G00D\"):" << endl;
+		wstring text;
+		getline(wcin, text);
+		workWithSiberia(text);
 	}
 	else
 	{
@@ -147,6 +179,9 @@ bool check_continue(char s)
 int main()
 {
 	setlocale(LC_ALL, "Russian");
+	char* locale = setlocale(LC_ALL, "");
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	bool cont;
 	do {
 		user_input();

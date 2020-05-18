@@ -22,6 +22,25 @@ string Elias::get_final_text(); // returns decrypted text.
 vector <string> Elias::get_format_str_text(); // returns decrypted separeted text as string.
 vector <int> Elias::get_format_int_text(); // returns decrypted separeted text as int.
 ```
+## ASCII
+Translates text from an ASCII table. Enter a binary, decimal, or hexadecimal number.
+
+## Siberia
+The received text is transferring to the format table. Then the text is read from the resulting table starting from the upper-left edge and filling in by diagonally. 
+
+### Siberia methods
+```c++
+std::wstring get_decrypted_text(); // returns decrypted text.
+	std::vector <int> get_decrypted_int_text(); // returns decrypted text character by character.
+```
+
+## AES
+Entered text and key. The text is written to a table with a width equal to the length of the key and a height equal to the ratio of the length of the text to the length of the key. Then the columns are shuffled by key and the text from this table is returned.
+
+### AES methods
+```c++
+std::wstring get_decrypted_text(); // returns decrypted text.
+```
 
 # Download
 ```bash

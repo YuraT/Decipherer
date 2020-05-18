@@ -1,5 +1,4 @@
 #include "Siberia.h"
-#include <iostream>
 
 Siberia::Siberia(std::wstring str)
 {
@@ -115,37 +114,25 @@ void Siberia::encrypt_text()
 {
     std::wstring str = {};
     for (int i = 0; i < (int)encryptedTable.size(); ++i)
-    {
         for (int j = 0; j < (int)encryptedTable[i].size(); ++j)
-        {
             str += (wchar_t)encryptedTable[i][j];
-        }
-    }
+
     encryptedText = str;
 }
 
 void Siberia::encrypt_int_text()
 {
     for (int i = 0; i < (int)encryptedTable.size(); ++i)
-    {
         for (int j = 0; j < (int)encryptedTable[i].size(); ++j)
-        {
             encryrtedIntText.push_back(encryptedTable[i][j]);
-        }
-    }
 }
 
 void Siberia::decrypt()
 {
     int n = 0;
     for (int i = 0; i < encryptedTable.size(); ++i)
-    {
         for (int j = 0; j < encryptedTable[i].size(); ++j)
-        {
-            decryptedTable[i].push_back(clearText[n]);
-            ++n;
-        }
-    }
+            decryptedTable[i].push_back(clearText[n++]);
 
     n = clearText.size();
     std::wstring str = {};

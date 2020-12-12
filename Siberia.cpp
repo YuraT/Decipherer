@@ -2,12 +2,12 @@
 
 Siberia::Siberia(std::wstring str)
 {
-	clearText = str;
-	rows = find_size(str.length());
+    clearText = str;
+    rows = find_size(str.length());
 
     encryptedTable.resize(rows);
-	encrypt();
-	encrypt_text();
+    encrypt();
+    encrypt_text();
     encrypt_int_text();
 
     decryptedTable.resize(rows);
@@ -16,7 +16,7 @@ Siberia::Siberia(std::wstring str)
 
 std::wstring Siberia::get_encrypted_text()
 {
-	return encryptedText;
+    return encryptedText;
 }
 
 std::vector<int> Siberia::get_encrypted_int_text()

@@ -10,7 +10,7 @@ Aes::Aes(std::wstring text, std::wstring key)
 
 std::wstring Aes::get_decrypted_text()
 {
-	return decryptedText;
+    return decryptedText;
 }
 
 void Aes::determineOrder()
@@ -32,7 +32,7 @@ void Aes::determineOrder()
             if ((int)v[j].letter > (int)v[j + 1].letter)
                 std::swap(v[j], v[j + 1]);
 
-    for (auto &i : v)
+    for (auto& i : v)
         ordKey.push_back(i.num);
 }
 

@@ -5,11 +5,12 @@
 #include <algorithm>
 #include <limits>
 #include <string>
+#include <cctype>
 
 #include "Hamming.h"
 #include "Elias.h"
 #include "Siberia.h"
-#include "Aes.h"
+#include "AES.h"
 #include "ASCII.h"
 
 using namespace std;
@@ -24,15 +25,12 @@ using namespace std;
 //
 // ASCII test input : 1100001011100101111100001110110111101110
 // correct result : Верно
-//
-// Siberia test input : Выязав барионптысь ся!
-// correct result : Вы обязаны справиться!
-//
-// AES test input : икк тро Сее.п п 
-// AES key input : мрак
-// correct result : Спите крепко.
 
+// AES test input : :иуеьлнт куви ,п  С нгюшииьеболте х.еаетоеир рры д рв тт ллс а 
+// correct result : Секрет: буратиновые угли тлеют дольше, если при них врать.
 
+// Siberia test input : Кау кр К Ур Куа.а8Клл лур7 аы кл2Ррэн  Фканл.раиршу
+// correct result : Карл у Клары украл экранку. Карл нарушил 278 УК РФ.
 
 void unencrypt_ascii_text(vector <int> txt)
 {
@@ -86,6 +84,8 @@ bool work_with_ASCII(string text)
 	return true;
 }
 
+
+
 bool check_user_input(string& str) {
 	str.erase(remove_if(str.begin(), str.end(), pred), str.end());
 
@@ -94,17 +94,16 @@ bool check_user_input(string& str) {
 			return false;
 
 	return true;
-}	
+}
 
 string user_text_input()
 {
 	string text;
 	do {
-		cout << "Write the encrypted text (format: \"1100101 10101 101101\"):\n";
-		string text;
+		cout << "Write the encrypted text (format: \"01010100 0110100 001100101\"):\n";
 		getline(cin, text);
 		if (!check_user_input(text))
-			cerr << "Incorrect input text! Try again!\n";
+			cout << "Incorrect input text! Try again!\n";
 
 	} while (!check_user_input(text));
 	return text;
@@ -113,10 +112,12 @@ string user_text_input()
 void user_input()
 {
 	string uin;
-	cout << "Write the encoding type (Exampl: \"Hamming\"; \"allcommands\" for output of all commands):\n";
+	cout << "Write the encoding type (Example: \"Hamming\"; \"all\" for output of all commands):\n";
 	getline(cin, uin);
+	for (int i = 0; i < uin.size(); ++i)
+		uin[i] = toupper(uin[i]);
 
-	if (uin == "allcommands")
+	if (uin == "ALL")
 	{
 		cout << "All Types:\n";
 		cout << "\"Hamming\" - The received text is packaged in separate packets of 15 characters. Each packet is checked for losses and if they are present, the losses are eliminated. Then all the defender bits are deleted. You can get separate clear packet.\n\n";
@@ -128,12 +129,12 @@ void user_input()
 		cout << "Write the encoding type or command:\n";
 		getline(cin, uin);
 	}
-	if (uin == "Hamming")
+	if (uin == "HAMMING")
 	{
 		string text = user_text_input();
 		work_with_hamming(text);
 	}
-	else if (uin == "Elias")
+	else if (uin == "ELIAS")
 	{
 		string text = user_text_input();
 		work_with_elias(text);
@@ -145,14 +146,14 @@ void user_input()
 		bool success = true;
 		do {
 			if (!success)
-				cerr << "Incorrect input text! Try again!\n";
+				cout << "Incorrect input text! Try again!\n";
 
 			getline(cin, text);
 			success = work_with_ASCII(text);
 		} while (!success);
 
 	}
-	else if (uin == "Siberia")
+	else if (uin == "SIBERIA")
 	{
 		cout << "Write the encrypted text (format: \"very G00D\"):\n";
 		wstring text;
@@ -171,11 +172,11 @@ void user_input()
 			key[i] = towupper(key[i]);
 		work_with_AES(text, key);
 	}
-	else if (uin == "cls")
+	else if (uin == "CLS")
 		system("cls");
 	else
 	{
-		cerr << "Incorrect input! Try again!\n";
+		cout << "Incorrect input! Try again!\n";
 		user_input();
 	}
 }
@@ -200,7 +201,7 @@ int main()
 		char c;
 		do {
 			cout << "Do you want continue working? (Y / N)\n";
-			cin.get(c); 
+			cin.get(c);
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 		} while (!check_continue(c));
 		cont = (c == 'y' ? true : false);

@@ -7,7 +7,6 @@ std::vector <int> fromVStrToVInt(std::vector <std::string> txt, int f)
 	auto iti = v.begin();
 	for (auto its = txt.begin(); its < txt.end(); ++its, ++iti)
 		*iti = stoi(*its, nullptr, (f == 1 ? 2 : (f == 2 ? 10 : 16)));
-
 	return v;
 }
 
@@ -29,6 +28,7 @@ std::vector <std::string> fromStrToIntHexVStr(std::string txt)
 
 std::vector <std::string> fromStrToVStr(std::string txt)
 {
+	txt.erase(remove_if(txt.begin(), txt.end(), pred), txt.end());
 	std::vector <std::string> v;
 	int n = txt.size() / 8;
 	std::string s(txt);
@@ -50,7 +50,7 @@ bool pred(char x)
 	return (x == ' ' ? true : false);
 }
 
-int check_ASCII_input(std::string & text)
+int check_ASCII_input(std::string& text)
 {
 	for (auto& i : text)
 		if (!isdigit(i) && toupper(i) != 'A' && toupper(i) != 'B' && toupper(i) != 'C' && toupper(i) != 'D' && toupper(i) != 'E' && toupper(i) != 'F' && i != ' ')
